@@ -31,9 +31,39 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/data', function (req, res) {
-  console.log(JSON.stringify(response))
-  return res.status(200).send("Hi")
+app.get('/data/latest', function (req, res) {
+  let responseObject = {
+    msg: null,
+    status: null,
+    count: 0,
+    data: null
+  }
+
+  async function getMeasurement(sensor) {
+    const sensorData = await db.collection(sensor)
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+    sensorData.get().then((querySnapshot) => {
+        const tempDoc = []
+        querySnapshot.forEach((doc) => {
+            tempDoc.push({ 
+              id: doc.id,
+              ...doc.data()
+            })
+        })
+        responseObject.data = tempDoc
+        responseObject.count = tempDoc.length
+        responseObject.status = 200
+        responseObject.msg = 'Fetched latest sensor data successfully!'
+        return res.status(200).send(responseObject)
+     }).catch(err => {
+       responseObject.msg = err
+       return res.status(400).send(responseObject)
+     })
+  }
+
+  const sensor = req.params.sensor || '10703075'
+  getMeasurement(sensor)
 })
 
 app.post('/data', async function (req, res) {
