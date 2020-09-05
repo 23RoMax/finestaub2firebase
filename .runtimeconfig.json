@@ -1,0 +1,8 @@
+{
+  "firebase": {
+    "projectId": "blog-1523231623641",
+    "databaseURL": "https://blog-1523231623641.firebaseio.com",
+    "storageBucket": "blog-1523231623641.appspot.com",
+    "locationId": "us-central"
+  }
+}
