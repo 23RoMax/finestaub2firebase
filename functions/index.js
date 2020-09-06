@@ -44,12 +44,16 @@ app.get('/data/latest', function (req, res) {
       .orderBy('createdAt', 'desc')
       .limit(1)
     sensorData.get().then((querySnapshot) => {
-        const tempDoc = []
+        let tempDoc = {}
         querySnapshot.forEach((doc) => {
-            tempDoc.push({ 
+          let data = doc.data()
+            tempDoc = { 
               id: doc.id,
-              ...doc.data()
-            })
+              sdsp1: data['0'].value,
+              sdsp2: data['1'].value,
+              sampleNumber: data['2'].value,
+              ...data
+            }
         })
         responseObject.data = tempDoc
         responseObject.count = tempDoc.length
